@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'jimu/BaseWidget', 'esri/map', 'esri/SpatialReference', 'dojo/on'], function (declare, BaseWidget, Map, SpatialReference, on) {
+define(['dojo/_base/declare', 'jimu/BaseWidget', 'esri/map', 'esri/SpatialReference', 'esri/geometry/Extent', "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer"], function (declare, BaseWidget, Map, SpatialReference, Extent, FeatureLayer, ArcGISDynamicMapServiceLayer) {
             //To create a widget, you need to derive from BaseWidget.
             return declare([BaseWidget], {
 
@@ -8,18 +8,34 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'esri/map', 'esri/SpatialRefere
                         epsg: null,
                         center: {
                                     '32717': {
-                                                x: 1226968.0270,
-                                                y: 8983605.4679
+                                                xmin: -10142884.841428969,
+                                                ymin: -1980962.564791115,
+                                                xmax: -6424987.785638983,
+                                                ymax: 63880.81589337652,
+                                                zona: 17,
+                                                url_cmi: 'WGS84_17/WEBGIS_CATASTRO_MINERO_WGS84_17/MapServer/0',
+                                                url_basemap: "WGS84_17/WEBGIS_PAISES_UTM_WGS84_17/MapServer"
                                     },
                                     '32718': {
-                                                x: 564501.0873,
-                                                y: 8993441.4110
+                                                xmin: -10114105.37080958,
+                                                ymin: -2016984.56600928,
+                                                xmax: -6396208.3150195945,
+                                                ymax: 27858.81467521147,
+                                                zona: 18,
+                                                url_cmi: 'WGS84_18/WEBGIS_CATASTRO_MINERO_WGS84_18/MapServer/0',
+                                                url_basemap: "WGS84_17/WEBGIS_PAISES_UTM_WGS84_17/MapServer"
                                     },
                                     '32719': {
-                                                x: 564501.0873,
-                                                y: 8993441.4110
+                                                xmin: -10056890.70524422,
+                                                ymin: -1985573.973288541,
+                                                xmax: -6338993.649454236,
+                                                ymax: 59269.407395950635,
+                                                zona: 19,
+                                                url_cmi: 'WGS84_19/WEBGIS_CATASTRO_MINERO_WGS84_19/MapServer/0',
+                                                url_basemap: "WGS84_17/WEBGIS_PAISES_UTM_WGS84_17/MapServer"
                                     }
                         },
+                        urlAgsIngemmet: 'https://geocatminapp.ingemmet.gob.pe/arcgis/rest/services/',
                         // this property is set by the framework when widget is loaded.
                         // name: 'update_epsg_map',
                         // add additional properties here
@@ -39,24 +55,31 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'esri/map', 'esri/SpatialRefere
                                     this.epsg = this.selectUEM.value;
 
                                     var src = new SpatialReference({
-                                                wkid: this.epsg
+                                                wkid: parseInt(this.epsg)
                                     });
 
-                                    var centerView = {
-                                                x: this.center[this.epsg].x,
-                                                y: this.center[this.epsg].y,
-                                                spatialReference: src
-                                    };
+                                    var ext = this.center[this.epsg];
+                                    zona = ext.zona;
 
                                     this.map.removeAllLayers();
-                                    this.map.container = null;
-                                    this.map = null;
 
-                                    // this.map = new Map()
+                                    this.map.spatialReference = src;
 
-                                    console.log(this.epsg);
-                                    console.log(src);
-                                    console.log(centerView);
+                                    var basemap = new ArcGISDynamicMapServiceLayer(this.urlAgsIngemmet + ext.url_basemap);
+
+                                    this.map.addLayer(basemap);
+
+                                    // let customExtent = new Extent(ext.xmin, ext.ymin, ext.xmax, ext.ymax, src);
+                                    // this.map.setExtent(customExtent);
+                                    // this.map.setBasemap('satellite');
+                                    var featureLayer = this._getFeatureServiceUrl(this.map);
+                                    this.map.addLayer(featureLayer);
+                        },
+
+                        _getFeatureServiceUrl: function _getFeatureServiceUrl() {
+                                    var urlFeature = this.urlAgsIngemmet + this.center[this.epsg].url_cmi;
+                                    var featureLayer = new FeatureLayer(urlFeature);
+                                    return featureLayer;
                         }
 
                         // onOpen: function(){
