@@ -1,15 +1,18 @@
 define([
         'dojo/_base/declare',
         'jimu/BaseWidget',
+        'dijit/_WidgetsInTemplateMixin',
         'esri/map',
         'esri/SpatialReference',
         'esri/geometry/Extent',
         "esri/layers/FeatureLayer",
-        "esri/layers/ArcGISDynamicMapServiceLayer"
+        "esri/layers/ArcGISDynamicMapServiceLayer",
+        'dijit/form/Select'
     ],
     function(
         declare,
         BaseWidget,
+        _WidgetsInTemplateMixin,
         Map,
         SpatialReference,
         Extent,
@@ -17,7 +20,7 @@ define([
         ArcGISDynamicMapServiceLayer
     ) {
         //To create a widget, you need to derive from BaseWidget.
-        return declare([BaseWidget], {
+        return declare([BaseWidget, _WidgetsInTemplateMixin], {
 
             // Custom widget code goes here
 
@@ -66,6 +69,7 @@ define([
             startup: function() {
                 this.inherited(arguments);
                 console.log('update_epsg_map::startup');
+                this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
             },
 
             _updateSrcView: function() {
@@ -76,11 +80,10 @@ define([
                 });
 
                 var ext = this.center[this.epsg];
-                zona = ext.zona;
 
                 this.map.removeAllLayers();
 
-                this.map.spatialReference = src;
+                // this.map.spatialReference = src;
 
                 var basemap = new ArcGISDynamicMapServiceLayer(this.urlAgsIngemmet + ext.url_basemap);
 
