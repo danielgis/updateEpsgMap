@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin', 'esri/map', 'esri/SpatialReference', 'esri/geometry/Extent', "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", 'dijit/form/Select'], function (declare, BaseWidget, _WidgetsInTemplateMixin, Map, SpatialReference, Extent, FeatureLayer, ArcGISDynamicMapServiceLayer) {
+define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin', 'esri/map', 'esri/SpatialReference', 'esri/geometry/Extent', "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", 'dojox/widget/TitleGroup', 'dijit/form/Select', 'dijit/TitlePane', 'dijit/form/TextBox'], function (declare, BaseWidget, _WidgetsInTemplateMixin, Map, SpatialReference, Extent, FeatureLayer, ArcGISDynamicMapServiceLayer) {
             //To create a widget, you need to derive from BaseWidget.
             return declare([BaseWidget, _WidgetsInTemplateMixin], {
 
@@ -42,14 +42,22 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin'
 
                         //methods to communication with app container:
                         postCreate: function postCreate() {
-                                    this.inherited(arguments);
-                                    console.log('update_epsg_map::postCreate');
+                                    try {
+                                                this.inherited(arguments);
+                                                console.log('update_epsg_map::postCreate');
+                                    } catch (err) {
+                                                console.log(err);
+                                    }
                         },
 
                         startup: function startup() {
-                                    this.inherited(arguments);
-                                    console.log('update_epsg_map::startup');
-                                    this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
+                                    try {
+                                                this.inherited(arguments);
+                                                console.log('update_epsg_map::startup');
+                                                this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
+                                    } catch (err) {
+                                                console.log(err);
+                                    }
                         },
 
                         _updateSrcView: function _updateSrcView() {

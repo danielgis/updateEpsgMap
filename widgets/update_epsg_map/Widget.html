@@ -1,10 +1,28 @@
 <div>
 	<div class="containerUEM">
-		<p>${nls.useDesc}</p>
+		<p>${nls.optZona}</p>
 		<select data-dojo-attach-point="selectUEM" data-dojo-attach-event="change: _updateSrcView" data-dojo-type="dijit/form/Select" style="width: 100%;">
 			<option value="32717">WGS84 17s</option>
 			<option value="32718" selected>WGS84 18s</option>
 			<option value="32719">WGS84 19s</option>
 		</select>
+		<hr>
+		<p>${nls.optMetodo}</p>
+		<div id="tgBusqueda" data-dojo-type="dojox/widget/TitleGroup">
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Distrito'" data-dojo-attach-point="tpDistrito">
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
+			</div>
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Carta Nacional', open:false" data-dojo-attach-point="tpDistrito">
+				 <p>${nls.optCarta}</p>
+				 <input type="text" data-dojo-type="dijit/form/TextBox" style="width: 35%;" placeholder="Ejm: 27" />-<input type="text" data-dojo-type="dijit/form/TextBox" style="width: 35%;" placeholder="Ejm: J" /><button></button>
+			</div>
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Derecho minero', open:false" data-dojo-attach-point="tpDistrito">
+				 Click arrow to close me.
+			</div>
+		</div>
+		<hr>
+		<p>${nls.optGraficar}</p>
 	</div>
 </div>

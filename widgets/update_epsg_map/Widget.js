@@ -7,7 +7,10 @@ define([
         'esri/geometry/Extent',
         "esri/layers/FeatureLayer",
         "esri/layers/ArcGISDynamicMapServiceLayer",
-        'dijit/form/Select'
+        'dojox/widget/TitleGroup',
+        'dijit/form/Select',
+        'dijit/TitlePane',
+        'dijit/form/TextBox'
     ],
     function(
         declare,
@@ -62,14 +65,24 @@ define([
 
             //methods to communication with app container:
             postCreate: function() {
-                this.inherited(arguments);
-                console.log('update_epsg_map::postCreate');
+                try {
+                    this.inherited(arguments);
+                    console.log('update_epsg_map::postCreate');
+                } catch (err) {
+                    console.log(err);
+                }
+
             },
 
             startup: function() {
-                this.inherited(arguments);
-                console.log('update_epsg_map::startup');
-                this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
+                try {
+                    this.inherited(arguments);
+                    console.log('update_epsg_map::startup');
+                    this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
+                } catch (err) {
+                    console.log(err);
+                }
+
             },
 
             _updateSrcView: function() {
@@ -102,8 +115,6 @@ define([
                 var featureLayer = new FeatureLayer(urlFeature);
                 return featureLayer;
             }
-
-
 
             // onOpen: function(){
             //   console.log('update_epsg_map::onOpen');
