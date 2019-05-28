@@ -6,7 +6,9 @@ define({
     optZona: '1. Seleccione el sistema de referencia que desea utilizar:',
     optMetodo: '2. Seleccione el ámbito de búsqueda',
     optGraficar: '3. Graficar un punto en el mapa',
-    optCarta: 'Ingrese el código de carta'
+    optCarta: 'Ingrese el código de carta',
+    optDm: 'Ingrese el código de derecho minero',
+    btnBuscar: "Buscar"
   }
   // add supported locales below:
   // , "zh-cn": true

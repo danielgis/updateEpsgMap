@@ -1,3 +1,8 @@
 {
-  "serviceUrl": "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
+  "serviceUrl": "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+  "units": "km",
+  "colorMarker": "#fab95b",
+  "colorBorderMarker": "#212121",
+  "sizeMarker": 12,
+  "sizeBorderMarker": 1
 }

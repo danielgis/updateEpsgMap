@@ -5,3 +5,37 @@
   margin-top: 0;
 }
 /* add additional custom styles */
+
+
+.update-epsg-map .containerCartaInput, .containerDmInput{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.update-epsg-map .containerDrawUEM{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.update-epsg-map .toolbarUEM{
+  padding: 1%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  margin: 3px;
+  margin-bottom: 12px;
+}
+
+.update-epsg-map #point{
+  background: url('img/point.png') no-repeat 50% 50%;
+  background-color: #ddd;
+}
+
+.update-epsg-map #erase{
+  background: url('img/delete.png') no-repeat 50% 50%;
+  background-color: #e95453;
+}
+

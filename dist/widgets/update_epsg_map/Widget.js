@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin', 'esri/map', 'esri/SpatialReference', 'esri/geometry/Extent', "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", 'dojox/widget/TitleGroup', 'dijit/form/Select', 'dijit/TitlePane', 'dijit/form/TextBox'], function (declare, BaseWidget, _WidgetsInTemplateMixin, Map, SpatialReference, Extent, FeatureLayer, ArcGISDynamicMapServiceLayer) {
+define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin', 'esri/map', 'esri/toolbars/draw', 'esri/SpatialReference', 'esri/geometry/Extent', "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", 'dojo/_base/Color', "dojo/_base/lang", 'dojox/widget/TitleGroup', 'dijit/form/Select', 'dijit/TitlePane', 'dijit/form/TextBox', 'dijit/form/Button', 'dijit/form/HorizontalSlider', 'dijit/form/HorizontalRule', 'dijit/form/HorizontalRuleLabels'], function (declare, BaseWidget, _WidgetsInTemplateMixin, Map, Draw, SpatialReference, Extent, FeatureLayer, ArcGISDynamicMapServiceLayer, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, Color, lang) {
             //To create a widget, you need to derive from BaseWidget.
             return declare([BaseWidget, _WidgetsInTemplateMixin], {
 
@@ -45,6 +45,7 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin'
                                     try {
                                                 this.inherited(arguments);
                                                 console.log('update_epsg_map::postCreate');
+                                                this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
                                     } catch (err) {
                                                 console.log(err);
                                     }
@@ -54,7 +55,7 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin'
                                     try {
                                                 this.inherited(arguments);
                                                 console.log('update_epsg_map::startup');
-                                                this.getPanel().titleLabelNode.innerHTML = this.nls.widgetTitle;
+                                                this._createToolbarUEM();
                                     } catch (err) {
                                                 console.log(err);
                                     }
@@ -88,6 +89,56 @@ define(['dojo/_base/declare', 'jimu/BaseWidget', 'dijit/_WidgetsInTemplateMixin'
                                     var urlFeature = this.urlAgsIngemmet + this.center[this.epsg].url_cmi;
                                     var featureLayer = new FeatureLayer(urlFeature);
                                     return featureLayer;
+                        },
+
+                        _activateToolUEM: function _activateToolUEM(evt) {
+                                    // id del tag contenedor utlizado
+                                    var tool = evt.target.id.toUpperCase();
+                                    if (tool != "ERASE") {
+                                                // Se establece el tipo de geometria a graficar por el id del tag contenedor
+                                                tb.activate(Draw[tool]);
+                                    } else {
+                                                // Elimina todos los graficos generados
+                                                this.map.graphics.clear();
+                                    }
+                        },
+
+                        _createToolbarUEM: function _createToolbarUEM() {
+                                    tb = new Draw(this.map);
+                                    tb.on('draw-end', this._addToMapUEM);
+                        },
+
+                        // _customStyleMarker: function(){
+                        //     // Configurar estilo del Marker
+                        //     let style = SimpleMarkerSymbol.STYLE_CIRCLE;
+                        //     let colorMark = new Color.fromHex(this.config.colorMarker);
+                        //     let colorLine = new Color.fromHex(this.config.colorBorderMarker);
+                        //     let size = this.config.sizeMarker;
+                        //     let width = this.config.sizeBorderMarker;
+                        //     let sls = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, colorLine, width);
+                        //     var symbol = new SimpleMarkerSymbol(style, size, sls, colorMark);
+                        //     return symbol;
+                        // },
+
+                        _addToMapUEM: function _addToMapUEM(evt) {
+                                    // Se desactiva el evento de dibujo
+                                    tb.deactivate();
+
+                                    // var symbol = this._customStyleMarker();
+
+                                    var style = SimpleMarkerSymbol.STYLE_CIRCLE;
+                                    var colorMark = new Color.fromHex("#fab95b");
+                                    var colorLine = new Color.fromHex("#212121");
+                                    var size = 12;
+                                    var width = 1;
+                                    var sls = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, colorLine, width);
+                                    var symbol = new SimpleMarkerSymbol(style, size, sls, colorMark);
+
+                                    // Agregando estilo al grafico
+                                    var graphic = new Graphic(evt.geometry, symbol);
+
+                                    // Agregando el grafico al mapa
+                                    this.map.graphics.add(graphic);
                         }
 
                         // onOpen: function(){
