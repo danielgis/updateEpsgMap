@@ -9,12 +9,18 @@
 		<hr>
 		<p>${nls.optMetodo}</p>
 		<div id="tgBusqueda" data-dojo-type="dojox/widget/TitleGroup">
-			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Distrito'" data-dojo-attach-point="tpDistrito">
-				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
-				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
-				 <select data-dojo-type="dijit/form/Select" style="width: 100%;"></select><br><br>
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Demarcacion'" data-dojo-attach-point="tpDistrito" style="display: ${config.busqueda.demarcacion};">
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;">
+				 	<option disabled="disabled" selected="selected" value="">- Región -</option>
+				 </select><br><br>
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;">
+				 	<option disabled="disabled" selected="selected" value="">- Provincia -</option>
+				 </select><br><br>
+				 <select data-dojo-type="dijit/form/Select" style="width: 100%;">
+				 	<option disabled="disabled" selected="selected" value="">- Distrito -</option>
+				 </select><br><br>
 			</div>
-			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Carta Nacional', open:false" data-dojo-attach-point="tpDistrito">
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Carta Nacional', open:false" data-dojo-attach-point="tpCarta" style="display: ${config.busqueda.carta};">
 				<div class="containerCartaNacional">
 					<div class="containerCartaLabel">
 						<p>${nls.optCarta}</p>
@@ -24,7 +30,7 @@
 					</div>
 				</div>
 			</div>
-			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Derecho minero', open:false, showLabel: false" data-dojo-attach-point="tpDistrito">
+			<div data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Derecho minero', open:false, showLabel: false" data-dojo-attach-point="tpDm" style="display: ${config.busqueda.dminero};">
 				<div class="containerDmLabel">
 					<p>${nls.optDm}</p>
 				</div>
@@ -36,30 +42,30 @@
 		<hr>
 		<p>${nls.optGraficar}</p>
 		<div class="containerDrawUEM">
-				<div id="horizontalSlider"
-					style="width:60%;"
-					name="horizontalSlider"
-					data-dojo-type="dijit/form/HorizontalSlider"
-					data-dojo-props="value:5,
-					minimum: 1,
-					maximum:8,
-					discreteValues:8,
-					intermediateChanges:true,
-					showButtons:false">
-					<ol data-dojo-type="dijit/form/HorizontalRuleLabels" container="topDecoration"
-						style="height:1.5em;font-size:75%;color:gray;">
-						<li>1</li>
-						<li>2</li>
-						<li>3</li>
-						<li>4</li>
-						<li>5</li>
-						<li>6</li>
-						<li>7</li>
-						<li>8${config.units}</li>
-					</ol>
-					<div data-dojo-type="dijit/form/HorizontalRule" container="bottomDecoration"
-					count=8 style="height:5px;"></div>
-				</div>
+			<div id="horizontalSlider"
+				style="width:60%;"
+				name="horizontalSlider"
+				data-dojo-type="dijit/form/HorizontalSlider"
+				data-dojo-props="value: ${config.distancia.def},
+				minimum: ${config.distancia.min},
+				maximum: ${config.distancia.max},
+				discreteValues:${config.distancia.max},
+				intermediateChanges:true,
+				showButtons:false" data-dojo-attach-event="change: _changeSliderUEM">
+				<ol data-dojo-type="dijit/form/HorizontalRuleLabels" container="topDecoration"
+					style="height:1.5em;font-size:75%;color:gray;">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>5</li>
+					<li>6</li>
+					<li>7</li>
+					<li>8${config.distancia.abr}</li>
+				</ol>
+				<div data-dojo-type="dijit/form/HorizontalRule" container="bottomDecoration"
+				count=8 style="height:4px;"></div>
+			</div>
 			<div class="containerTool">
 				<button id="point" class="toolbarUEM" title="Graficar punto" data-dojo-attach-event="onClick: _activateToolUEM"></button>
 				<button id="erase" class="toolbarUEM" title="Eliminar gráficos" data-dojo-attach-event="onClick: _activateToolUEM"></button>

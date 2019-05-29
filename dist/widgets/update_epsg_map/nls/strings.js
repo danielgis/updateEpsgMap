@@ -5,7 +5,7 @@ define({
     description: 'Actualiza el sistema de referencia del mapa principal de la aplicacion',
     optZona: '1. Seleccione el sistema de referencia que desea utilizar:',
     optMetodo: '2. Seleccione el ámbito de búsqueda',
-    optGraficar: '3. Graficar un punto en el mapa',
+    optGraficar: '3. Graficar',
     optCarta: 'Ingrese el código de carta',
     optDm: 'Ingrese el código de derecho minero',
     btnBuscar: "Buscar"

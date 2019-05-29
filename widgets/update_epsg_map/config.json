@@ -1,8 +1,23 @@
 {
-  "serviceUrl": "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
-  "units": "km",
-  "colorMarker": "#fab95b",
-  "colorBorderMarker": "#212121",
-  "sizeMarker": 12,
-  "sizeBorderMarker": 1
+  "distancia": {
+    "unt": "kilometers",
+    "abr": "Km",
+    "min": 1,
+    "max": 8,
+    "int": 1,
+    "def": 5
+  },
+  "simbologia": {
+    "point": {
+      "colorMarker": "#fab95b",
+      "colorBorderMarker": "#212121",
+      "sizeMarker": 12,
+      "sizeBorderMarker": 1
+    }
+  },
+  "busqueda": {
+    "demarcacion": "block",
+    "carta": "block",
+    "dminero": "block"
+  }
 }

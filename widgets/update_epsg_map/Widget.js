@@ -11,8 +11,11 @@ define([
         "esri/graphic",
         "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/SimpleLineSymbol",
+        "esri/symbols/SimpleFillSymbol",
         'dojo/_base/Color',
-        "dojo/_base/lang",
+        "esri/geometry/geometryEngine",
+        'jimu/PanelManager',
+        'dojo/_base/array',
         'dojox/widget/TitleGroup',
         'dijit/form/Select',
         'dijit/TitlePane',
@@ -35,8 +38,11 @@ define([
         Graphic,
         SimpleMarkerSymbol,
         SimpleLineSymbol,
+        SimpleFillSymbol,
         Color,
-        lang
+        geometryEngine,
+        PanelManager,
+        array
     ) {
         //To create a widget, you need to derive from BaseWidget.
         return declare([BaseWidget, _WidgetsInTemplateMixin], {
@@ -75,6 +81,8 @@ define([
                 }
             },
             urlAgsIngemmet: 'https://geocatminapp.ingemmet.gob.pe/arcgis/rest/services/',
+            geoms: [],
+            graphicBuffer: [],
             // this property is set by the framework when widget is loaded.
             // name: 'update_epsg_map',
             // add additional properties here
@@ -88,18 +96,17 @@ define([
                 } catch (err) {
                     console.log(err);
                 }
-
             },
 
             startup: function() {
                 try {
                     this.inherited(arguments);
                     console.log('update_epsg_map::startup');
+                    self = this; // Conservar el contexto incial de this
                     this._createToolbarUEM();
                 } catch (err) {
                     console.log(err);
                 }
-
             },
 
             _updateSrcView: function() {
@@ -124,7 +131,6 @@ define([
                 // this.map.setBasemap('satellite');
                 var featureLayer = this._getFeatureServiceUrl(this.map);
                 this.map.addLayer(featureLayer);
-
             },
 
             _getFeatureServiceUrl: function() {
@@ -135,7 +141,7 @@ define([
 
 
             _activateToolUEM: function(evt) {
-                // id del tag contenedor utlizado
+                // id del tag contenedor utilizado (convertir a mayusculas)
                 var tool = evt.target.id.toUpperCase();
                 if (tool != "ERASE") {
                     // Se establece el tipo de geometria a graficar por el id del tag contenedor
@@ -143,6 +149,8 @@ define([
                 } else {
                     // Elimina todos los graficos generados
                     this.map.graphics.clear();
+                    self.geoms = [];
+                    self.graphicBuffer = [];
                 }
             },
 
@@ -151,37 +159,63 @@ define([
                 tb.on('draw-end', this._addToMapUEM);
             },
 
-            // _customStyleMarker: function(){
-            //     // Configurar estilo del Marker
-            //     let style = SimpleMarkerSymbol.STYLE_CIRCLE;
-            //     let colorMark = new Color.fromHex(this.config.colorMarker);
-            //     let colorLine = new Color.fromHex(this.config.colorBorderMarker);
-            //     let size = this.config.sizeMarker;
-            //     let width = this.config.sizeBorderMarker;
-            //     let sls = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, colorLine, width);
-            //     var symbol = new SimpleMarkerSymbol(style, size, sls, colorMark);
-            //     return symbol;
-            // },
+            _customStyleMarker: function() {
+                // Configurar estilo del Marker
+                let style = SimpleMarkerSymbol.STYLE_CIRCLE;
+                let colorMark = new Color.fromHex(self.config.simbologia.point.colorMarker);
+                let colorLine = new Color.fromHex(self.config.simbologia.point.colorBorderMarker);
+                let size = self.config.simbologia.point.sizeMarker;
+                let width = self.config.simbologia.point.sizeBorderMarker;
+                let sls = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, colorLine, width);
+                var symbol = new SimpleMarkerSymbol(style, size, sls, colorMark);
+                return symbol;
+            },
+
+            _customStyleBuffer: function() {
+                // Configurar estilo del Marker
+                var symbol = new SimpleFillSymbol();
+                return symbol;
+            },
 
             _addToMapUEM: function(evt) {
+                this.map.graphics.clear();
                 // Se desactiva el evento de dibujo
                 tb.deactivate();
 
-                // var symbol = this._customStyleMarker();
-
-                let style = SimpleMarkerSymbol.STYLE_CIRCLE;
-                let colorMark = new Color.fromHex("#fab95b");
-                let colorLine = new Color.fromHex("#212121");
-                let size = 12;
-                let width = 1;
-                let sls = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, colorLine, width);
-                var symbol = new SimpleMarkerSymbol(style, size, sls, colorMark);
+                // Obtener el estilo del marker
+                var symbol = self._customStyleMarker();
 
                 // Agregando estilo al grafico
                 var graphic = new Graphic(evt.geometry, symbol);
 
                 // Agregando el grafico al mapa
                 this.map.graphics.add(graphic);
+                self._createBuffer(evt.geometry);
+                self.geoms.push(evt.geometry);
+            },
+
+            _createBuffer: function(geom) {
+                let distance = dijit.byId("horizontalSlider").value;
+                var buffer = geometryEngine.geodesicBuffer(geom, [distance], self.config.distancia.unt, false);
+                var symbol = self._customStyleBuffer();
+                var graphic = new Graphic(buffer, symbol);
+                this.map.graphics.add(graphic);
+                this.map.setExtent(buffer.getExtent(), true);
+                self.graphicBuffer.push(graphic);
+
+                // Abrir widget por nombre
+                let widget = self.appConfig.getConfigElementsByName("serviceTotem");
+                let idwidget = widget[0].id;
+
+                self.openWidgetById(idwidget);
+            },
+
+            _changeSliderUEM: function(evt) {
+                if (self.geoms.length == 0) {
+                    return
+                }
+                this.map.graphics.remove(self.graphicBuffer.slice(-1)[0]);
+                self._createBuffer(self.geoms.slice(-1)[0]);
             }
 
             // onOpen: function(){
